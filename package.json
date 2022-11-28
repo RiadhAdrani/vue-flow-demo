@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ci": "yarn install --frozen-lockfile"
   },
   "dependencies": {
     "@riadh-adrani/gradient-path": "^2.2.1",
