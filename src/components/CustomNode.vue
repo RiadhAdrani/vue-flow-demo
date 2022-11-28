@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Position, useVueFlow } from "@vue-flow/core";
 import { onMounted, PropType, ref } from "vue";
+import { createPortId } from "../helpers";
 import { Port } from "../types";
 
 const props = defineProps({
@@ -23,7 +24,7 @@ const el = ref(null);
 
 onMounted(() => {
   const U_WIDTH = 150;
-  const U_HEADER_HEIGHT = 85;
+  const U_HEADER_HEIGHT = 65;
 
   const C_WIDTH = U_WIDTH / 2;
   const C_HEIGHT = 25;
@@ -58,7 +59,7 @@ onMounted(() => {
 
       addNodes([
         {
-          id: `${id}-input-${item.name}`,
+          id: createPortId(id, item.name, "input"),
           position: nodePos,
           label: item.name,
           parentNode: id,
@@ -78,7 +79,7 @@ onMounted(() => {
 
     addNodes([
       {
-        id: `${id}-output-${out.name}`,
+        id: createPortId(id, out.name, "output"),
         position: {
           x: 75,
           y: calculatePortY(length % 2 !== 0 ? Math.trunc(length / 2) : length / 2),
@@ -111,7 +112,7 @@ onMounted(() => {
 
 <style lang="scss">
 $U_WIDTH: 150px;
-$U_HEADER_HEIGHT: 85px;
+$U_HEADER_HEIGHT: 65px;
 
 $C_WIDTH: 75px;
 $C_HEIGHT: 25px;
@@ -141,11 +142,12 @@ $C_OFFSET: -20px;
       height: $C_HEIGHT;
       padding: 0px;
       display: flex;
+      font-size: 0.7em !important;
       align-items: center;
       justify-content: center;
       width: $C_WIDTH !important;
       background-color: transparent !important;
-      color: white !important;
+      color: #cfcfcf !important;
       border-color: transparent !important;
 
       & > .vue-flow__handle {
@@ -158,12 +160,14 @@ $C_OFFSET: -20px;
     }
 
     &-input {
+      justify-content: flex-start;
       & > .vue-flow__handle {
         left: $C_OFFSET;
       }
     }
 
     &-output {
+      justify-content: flex-end;
       & > .vue-flow__handle {
         right: $C_OFFSET;
       }

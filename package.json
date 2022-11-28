@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@riadh-adrani/gradient-path": "^2.2.1",
     "@vue-flow/core": "^1.4.2",
-    "gradient-path": "^2.3.0",
+    "data-gui": "^0.7.2",
     "tinygradient": "^1.1.5",
     "vue": "^3.2.41"
   },

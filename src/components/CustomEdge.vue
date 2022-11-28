@@ -1,21 +1,26 @@
 <script lang="ts" setup>
 import { BezierEdge, useVueFlow } from "@vue-flow/core";
-import { onMounted, PropType, ref } from "vue";
-import GradientPath from "../../../gradient-path/src/GradientPath";
+import { computed } from "@vue/reactivity";
+import { onMounted, onUnmounted, PropType, ref, reactive } from "vue";
+import { GradientPath } from "@riadh-adrani/gradient-path";
 
 const props = defineProps({
   id: String,
   source: String,
   target: String,
+  segments: Number,
   data: Object as PropType<{
     sourceColor: { type: String; required: false; default: "white" };
     targetColor: { type: String; required: false; default: "black" };
+    sourceParent: String;
+    targetParent: String;
   }>,
 });
 
-const { onNodeDrag } = useVueFlow();
+const { onNodeDrag, onSelectionDrag } = useVueFlow();
 
 const edge = ref(null);
+
 const grEdge = ref<GradientPath>(null as unknown as GradientPath);
 
 const getPath = (): SVGPathElement => {
@@ -26,38 +31,85 @@ const getPath = (): SVGPathElement => {
   ).querySelector("path") as SVGPathElement;
 };
 
-const drawGradient = () => {
-  const path = getPath();
+const segments = computed(() => props.segments!, {
+  onTrigger: (e) => {
+    options.segments = e.newValue as number;
+    redraw();
+  },
+});
 
+const options = reactive({
+  segments: segments.value,
+  samples: 1,
+  precision: 5,
+});
+
+const pathOptions = {
+  type: "path",
+  fill: [
+    { color: props.data!.sourceColor, pos: 0 },
+    { color: props.data!.targetColor, pos: 1 },
+  ],
+  width: 3,
+};
+
+const createGP = () => {
+  return new GradientPath({
+    path: getPath(),
+    ...options,
+  });
+};
+
+const renderGP = () => {
+  return createGP().render(pathOptions);
+};
+
+const drawGP = () => {
   if (grEdge.value !== null) {
     grEdge.value.group.remove();
   }
 
-  const gp = new GradientPath({
-    path,
-    segments: 20,
-    samples: 3,
-    precision: 2,
-  });
-
-  gp.render({
-    type: "path",
-    fill: [
-      { color: props.data!.sourceColor, pos: 0 },
-      { color: props.data!.targetColor, pos: 1 },
-    ],
-    width: 3,
-  });
-
-  grEdge.value = gp;
+  grEdge.value = renderGP();
 };
 
-onNodeDrag(() => {
-  drawGradient();
+const redraw = () => {
+  grEdge.value.group.remove();
+  grEdge.value = renderGP();
+};
+
+const update = () => {
+  grEdge.value.update(pathOptions);
+};
+
+const remove = () => {
+  grEdge.value.group.remove();
+};
+
+const shouldUpdate = (movingNode: string) => {
+  return [props.data?.sourceParent, props.data?.targetParent].includes(movingNode);
+};
+
+onNodeDrag((event) => {
+  if (shouldUpdate(event.node.id)) {
+    update();
+  }
+});
+
+onSelectionDrag((event) => {
+  for (let node of event.nodes) {
+    if (shouldUpdate(node.id)) {
+      update();
+      return;
+    }
+  }
 });
 
 onMounted(() => {
-  drawGradient();
+  drawGP();
+});
+
+onUnmounted(() => {
+  remove();
 });
 </script>
 

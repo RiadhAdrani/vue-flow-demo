@@ -17,6 +17,18 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.15.14.tgz#1221684955c44385f8af34f7240088b7dc08d19d"
   integrity sha512-eQi9rosGNVQFJyJWV0HCA5WZae/qWIQME7s8/j8DMvnylfBv62Pbu+zJ2eUDqNf2O4u3WB+OEXyfkpBoe194sg==
 
+"@riadh-adrani/gradient-path@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/gradient-path/-/gradient-path-2.2.1.tgz#9c1216e62924fa090737fc266fbf154e623222bd"
+  integrity sha512-cZfqXB9WrOjVkMyL1PNzj6qiY/tz+rTiZbydfPzk++5XyW3GAqqoaKCyNTk0qvBZqgZkA81SMF3uqawS49INOQ==
+  dependencies:
+    tinygradient "^1.0.0"
+
+"@solaldr/raf@^1.0.3":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@solaldr/raf/-/raf-1.0.5.tgz#ba189ee1caa81d982941b0a7c6c9681ca4aa0583"
+  integrity sha512-qJX7k8H5F4RIVMdOrDZXUNl6wAnA2JjppiS8aw7Vki43BpZSJHN6AUFR2xK6dnWMer8B8gztjVi+dOOk271deg==
+
 "@types/tinycolor2@^1.4.0":
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/@types/tinycolor2/-/tinycolor2-1.4.3.tgz#ed4a0901f954b126e6a914b4839c77462d56e706"
@@ -313,6 +325,14 @@ d3-zoom@^3.0.0:
     d3-selection "2 - 3"
     d3-transition "2 - 3"
 
+data-gui@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/data-gui/-/data-gui-0.7.2.tgz#928fb445da1cd4a7638a11d68118099e007fd175"
+  integrity sha512-eWphrpszo6bDYWq6uVUxuaKDie8qjtOMObRcJ3Evhi0ZZcFrAtahmpNgin3xCQMsQBUPWuALSGunbw4/XpZLTQ==
+  dependencies:
+    "@solaldr/raf" "^1.0.3"
+    lit-element "^2.4.0"
+
 de-indent@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
@@ -475,13 +495,6 @@ glob-parent@~5.1.2:
   dependencies:
     is-glob "^4.0.1"
 
-gradient-path@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/gradient-path/-/gradient-path-2.3.0.tgz#e70b8b962983ab944b9abbe030c2ce242ee811b9"
-  integrity sha512-vZdF/Z0EpqUztzWXFjFC16lqcialHacYoRonslk/bC6CuujkuIrqx7etlzdYHY4SnUU94LRWESamZKfkGh7yYQ==
-  dependencies:
-    tinygradient "^1.0.0"
-
 has@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/has/-/has-1.0.3.tgz#722d7cbfc1f6aa8241f16dd814e011e1f41e8796"
@@ -529,6 +542,18 @@ is-number@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/is-number/-/is-number-7.0.0.tgz#7535345b896734d5f80c4d06c50955527a14f12b"
   integrity sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==
+
+lit-element@^2.4.0:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/lit-element/-/lit-element-2.5.1.tgz#3fa74b121a6cd22902409ae3859b7847d01aa6b6"
+  integrity sha512-ogu7PiJTA33bEK0xGu1dmaX5vhcRjBXCFexPja0e7P7jqLhTpNKYRPmE+GmiCaRVAbiQKGkUgkh/i6+bh++dPQ==
+  dependencies:
+    lit-html "^1.1.1"
+
+lit-html@^1.1.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.4.1.tgz#0c6f3ee4ad4eb610a49831787f0478ad8e9ae5e0"
+  integrity sha512-B9btcSgPYb1q4oSOb/PrOT6Z/H+r6xuNzfH4lFli/AWhYwdtrgQkQWBbIc6mdnf6E2IL3gDXdkkqNktpU0OZQA==
 
 magic-string@^0.25.7:
   version "0.25.9"
