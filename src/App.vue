@@ -1,11 +1,21 @@
 <script lang="ts" setup>
-import { VueFlow, useVueFlow, GraphNode } from "@vue-flow/core";
+import { VueFlow, useVueFlow, GraphNode, ConnectionLineProps } from "@vue-flow/core";
 import { onMounted, ref } from "vue";
 import CustomEdge from "./components/CustomEdge.vue";
 import CustomNode from "./components/CustomNode.vue";
 import GUI from "data-gui";
+import CustomConnection from "./components/CustomConnection.vue";
 
-const { onConnect, findNode, findEdge, addEdges, onEdgeContextMenu, removeEdges } = useVueFlow({
+const {
+  onConnect,
+  findNode,
+  findEdge,
+  addEdges,
+  onEdgeContextMenu,
+  removeEdges,
+  onConnectStart,
+  connectionLineOptions,
+} = useVueFlow({
   nodes: [
     {
       type: "custom",
@@ -124,6 +134,8 @@ const { onConnect, findNode, findEdge, addEdges, onEdgeContextMenu, removeEdges 
   // create links automatically
   // not what we want really
   autoConnect: false,
+  // disable connecting by clicking
+  connectOnClick: false,
 });
 
 onConnect((connection) => {
@@ -164,7 +176,22 @@ onEdgeContextMenu((event) => {
   removeEdges([event.edge.id]);
 });
 
-const target = ref({ segments: 15 });
+const connectionColor = ref("white");
+
+onConnectStart((event) => {
+  const getPort = () =>
+    Array.from(document.querySelectorAll(".vue-flow__node")).find(
+      (port) => (port as HTMLDivElement).dataset.id === event.nodeId
+    ) as HTMLDivElement;
+
+  const port = getPort();
+
+  const color = port.style.getPropertyValue("--vf-node-color");
+
+  connectionColor.value = color;
+});
+
+const target = ref({ segments: 15, updateOnDrag: true });
 
 onMounted(() => {
   const gui = new GUI({ theme: "dark", name: "Configuration" });
@@ -180,6 +207,15 @@ onMounted(() => {
     .on("input", (segments: number) => {
       target.value = { ...target.value, segments };
     });
+
+  gui
+    .add("updateOnDrag", target.value, {
+      name: "Update on drag",
+      value: target.value.updateOnDrag,
+    })
+    .on("change", (updateOnDrag: boolean) => {
+      target.value = { ...target.value, updateOnDrag };
+    });
 });
 </script>
 <template>
@@ -189,7 +225,20 @@ onMounted(() => {
         <CustomNode :data="props.data" :id="props.id" :position="props.position" />
       </template>
       <template #edge-custom="props">
-        <CustomEdge v-bind="props" :segments="target.segments" />
+        <CustomEdge
+          v-bind="props"
+          :segments="target.segments"
+          :updateOnDrag="target.updateOnDrag"
+        />
+      </template>
+      <template #connection-line="props">
+        <CustomConnection
+          :source-x="(props as ConnectionLineProps).sourceX"
+          :source-y="(props as ConnectionLineProps).sourceY"
+          :target-x="(props as ConnectionLineProps).targetX"
+          :target-y="(props as ConnectionLineProps).targetY"
+          :color="connectionColor"
+        />
       </template>
     </VueFlow>
   </div>

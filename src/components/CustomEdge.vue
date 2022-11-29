@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BezierEdge, useVueFlow } from "@vue-flow/core";
+import { BezierEdge, NodeDragEvent, useVueFlow } from "@vue-flow/core";
 import { computed } from "@vue/reactivity";
 import { onMounted, onUnmounted, PropType, ref, reactive, watch } from "vue";
 import { GradientPath } from "@riadh-adrani/gradient-path";
@@ -9,6 +9,7 @@ const props = defineProps({
   source: String,
   target: String,
   segments: Number,
+  updateOnDrag: Boolean,
   data: Object as PropType<{
     sourceColor: { type: String; required: false; default: "white" };
     targetColor: { type: String; required: false; default: "black" };
@@ -17,7 +18,7 @@ const props = defineProps({
   }>,
 });
 
-const { onNodeDrag, onSelectionDrag } = useVueFlow();
+const { onNodeDrag, onSelectionDrag, onSelectionDragStop, onNodeDragStop } = useVueFlow();
 
 const edge = ref(null);
 
@@ -32,6 +33,7 @@ const getPath = (): SVGPathElement => {
 };
 
 const segments = computed(() => props.segments!);
+const updateOnDrag = computed(() => props.updateOnDrag);
 
 watch(
   () => segments.value,
@@ -76,7 +78,6 @@ const drawGP = () => {
 };
 
 const redraw = () => {
-  console.log("redrawing...");
   grEdge.value.group.remove();
   grEdge.value = renderGP();
 };
@@ -93,16 +94,42 @@ const shouldUpdate = (movingNode: string) => {
   return [props.data?.sourceParent, props.data?.targetParent].includes(movingNode);
 };
 
-onNodeDrag((event) => {
-  if (shouldUpdate(event.node.id)) {
+const checkAndUpdate = (nodeId: string) => {
+  if (shouldUpdate(nodeId)) {
     update();
+    return true;
+  } else {
+    return false;
   }
+};
+
+onNodeDrag((event) => {
+  if (!updateOnDrag.value) return;
+
+  checkAndUpdate(event.node.id);
 });
 
 onSelectionDrag((event) => {
+  if (!updateOnDrag.value) return;
+
   for (let node of event.nodes) {
-    if (shouldUpdate(node.id)) {
-      update();
+    if (checkAndUpdate(node.id)) {
+      return;
+    }
+  }
+});
+
+onNodeDragStop((event) => {
+  if (updateOnDrag.value) return;
+
+  checkAndUpdate(event.node.id);
+});
+
+onSelectionDragStop((event) => {
+  if (updateOnDrag.value) return;
+
+  for (let node of event.nodes) {
+    if (checkAndUpdate(node.id)) {
       return;
     }
   }
