@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { BezierEdge, useVueFlow } from "@vue-flow/core";
 import { computed } from "@vue/reactivity";
-import { onMounted, onUnmounted, PropType, ref, reactive } from "vue";
+import { onMounted, onUnmounted, PropType, ref, reactive, watch } from "vue";
 import { GradientPath } from "@riadh-adrani/gradient-path";
 
 const props = defineProps({
@@ -31,17 +31,20 @@ const getPath = (): SVGPathElement => {
   ).querySelector("path") as SVGPathElement;
 };
 
-const segments = computed(() => props.segments!, {
-  onTrigger: (e) => {
-    options.segments = e.newValue as number;
+const segments = computed(() => props.segments!);
+
+watch(
+  () => segments.value,
+  (value) => {
+    options.segments = value;
     redraw();
-  },
-});
+  }
+);
 
 const options = reactive({
   segments: segments.value,
   samples: 1,
-  precision: 5,
+  precision: 2,
 });
 
 const pathOptions = {
@@ -73,6 +76,7 @@ const drawGP = () => {
 };
 
 const redraw = () => {
+  console.log("redrawing...");
   grEdge.value.group.remove();
   grEdge.value = renderGP();
 };
